@@ -198,6 +198,27 @@ namespace ZoneRecoveryTests
         }
 
         [TestMethod]
+        public void FourthTurnLongPositionUpwardPriceActionHitsTakeProfitLevel()
+        {
+            var zrCalc = new ZoneRecoveryCalculator(TradePosition.Long, 4, 4, 1, 0, 0.34, 0.4, 3, 1);
+
+            var initPosition = zrCalc.ActivePosition;
+
+            var initResult = initPosition.PriceAction(3, 3);
+
+            var firstTurnResult = initResult.Item2.PriceAction(4, 4);
+
+            var secondTurnResult = firstTurnResult.Item2.PriceAction(3, 3);
+
+            var thirdTurnResult = secondTurnResult.Item2.PriceAction(4, 4);
+
+            var fourthTurnResult = thirdTurnResult.Item2.PriceAction(7, 7);
+
+            Assert.AreEqual(PriceActionResult.TakeProfitLevelHit, fourthTurnResult.Item1);
+            Assert.IsTrue(Math.Round(zrCalc.UnrealizedNetProfit, 5) == 0);
+        }
+
+        [TestMethod]
         public void FifthTurnShortPositionDownwardPriceActionHitsZoneRecoveryLevel()
         {
             var zrCalc = new ZoneRecoveryCalculator(TradePosition.Long, 4, 4, 1, 0, 0.34, 0.4, 3, 1);
@@ -217,6 +238,29 @@ namespace ZoneRecoveryTests
             var fifthTurnResult = fourthTurnResult.Item2.PriceAction(4, 4);
 
             Assert.AreEqual(PriceActionResult.RecoveryLevelHit, fifthTurnResult.Item1);            
+        }
+
+        [TestMethod]
+        public void FifthTurnShortPositionDownwardPriceActionHitsTakeProfitLevel()
+        {
+            var zrCalc = new ZoneRecoveryCalculator(TradePosition.Long, 4, 4, 1, 0, 0.34, 0.4, 3, 1);
+
+            var initPosition = zrCalc.ActivePosition;
+
+            var initResult = initPosition.PriceAction(3, 3);
+
+            var firstTurnResult = initResult.Item2.PriceAction(4, 4);
+
+            var secondTurnResult = firstTurnResult.Item2.PriceAction(3, 3);
+
+            var thirdTurnResult = secondTurnResult.Item2.PriceAction(4, 4);
+
+            var fourthTurnResult = thirdTurnResult.Item2.PriceAction(3, 3);
+
+            var fifthTurnResult = fourthTurnResult.Item2.PriceAction(0, 0);
+
+            Assert.AreEqual(PriceActionResult.TakeProfitLevelHit, fifthTurnResult.Item1);
+            Assert.IsTrue(Math.Round(zrCalc.UnrealizedNetProfit, 5) == 0);
         }
     }
 }

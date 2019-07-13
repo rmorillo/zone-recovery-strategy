@@ -36,6 +36,8 @@ namespace ZoneRecovery
         public double UnrealizedGrossProfit { get { return CalculateUnrealizedGrossProfit(); } }
         public double UnrealizedNetProfit { get { return CalculateUnrealizedNetProfit(); } }
 
+        public double TotalLotSize { get { return CalculateTotalLotSize(); } }
+
         public ZoneRecoveryCalculator(TradePosition initPosition, double entryBidPrice, double entryAskPrice, double initLotSize, double spread, double commission, double slippage, int tradeZoneSize, int zoneRecoverySize)
         {
             ZoneLevels = new ZoneLevels((entryBidPrice + entryAskPrice)/2d, tradeZoneSize, zoneRecoverySize);
@@ -68,6 +70,19 @@ namespace ZoneRecovery
             }
 
             return totalNetReturns;
+        }
+
+        private double CalculateTotalLotSize()
+        {
+            var turn = ActivePosition;
+            double totalLotSize = 0;
+            while (turn != null)
+            {
+                totalLotSize += turn.LotSize;
+                turn = turn.PreviousTurn;
+            }
+
+            return totalLotSize;
         }
 
         public void Update(ZoneRecoveryPosition activeTurn)
@@ -361,7 +376,7 @@ namespace ZoneRecovery
                         }
                         else if (turn.Position == TradePosition.Short)
                         {
-                            totalNetReturns -= turn.LotSize * (_zoneLevels.UpperTradingZone - _zoneLevels.UpperRecoveryZone) + turn.Commission;
+                            totalNetReturns -= turn.LotSize * (_zoneLevels.UpperTradingZone - _zoneLevels.LowerRecoveryZone) + turn.Commission;
                         }
                     }
                 }
