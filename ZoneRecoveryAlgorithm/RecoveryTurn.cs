@@ -109,7 +109,7 @@ namespace ZoneRecoveryAlgorithm
                 {
                     var newPosition = Position.Reverse();
                     double previousTurnTargetNetReturns = GetTotalPreviousNetReturns(newPosition, PreviousTurn);
-                    double lotSize = GetLossRecoveryLotSize(_zoneLevels, previousTurnTargetNetReturns, _commissionRate);
+                    double lotSize = GetLossRecoveryLotSize(_zoneLevels, previousTurnTargetNetReturns, spread, _commissionRate);
 
                     IsActive = false;
 
@@ -138,7 +138,7 @@ namespace ZoneRecoveryAlgorithm
             }
         }
 
-        private double GetLossRecoveryLotSize(ZoneLevels zoneLevels, double previousTurnTargetNetReturns, double commissionRate)
+        private double GetLossRecoveryLotSize(ZoneLevels zoneLevels, double previousTurnTargetNetReturns, double spread, double commissionRate)
         {
             /*
             Total Gain Potential(TPG) - Total Loss Potential(TPL) = 0
@@ -160,11 +160,11 @@ namespace ZoneRecoveryAlgorithm
 
             if (Position == MarketPosition.Long)
             {
-                return (LotSize * (EntryPrice - zoneLevels.LowerTradingZone) + Commission - previousTurnTargetNetReturns) / (zoneLevels.LowerRecoveryZone - zoneLevels.LowerTradingZone - _commissionRate);
+                return (LotSize * (EntryPrice - zoneLevels.LowerTradingZone) + Commission  + spread - previousTurnTargetNetReturns) / (zoneLevels.LowerRecoveryZone - zoneLevels.LowerTradingZone - _commissionRate);
             }
             else if (Position == MarketPosition.Short)
             {
-                return (LotSize * (zoneLevels.UpperTradingZone - EntryPrice) + Commission - previousTurnTargetNetReturns) / (zoneLevels.UpperTradingZone - zoneLevels.UpperRecoveryZone - _commissionRate);
+                return (LotSize * (zoneLevels.UpperTradingZone - EntryPrice) + Commission + spread - previousTurnTargetNetReturns) / (zoneLevels.UpperTradingZone - zoneLevels.UpperRecoveryZone - _commissionRate);
             }
             else
             {
@@ -192,11 +192,11 @@ namespace ZoneRecoveryAlgorithm
             {
                 if (Position == MarketPosition.Long)
                 {
-                    return - (LotSize * (_zoneLevels.UpperRecoveryZone - _zoneLevels.LowerTradingZone) + Commission);
+                    return - (LotSize * (_zoneLevels.UpperRecoveryZone - _zoneLevels.LowerTradingZone) + Commission + Spread);
                 }
                 else if (Position == MarketPosition.Short)
                 {
-                    return LotSize * (_zoneLevels.LowerRecoveryZone - _zoneLevels.LowerTradingZone) - Commission;
+                    return LotSize * (_zoneLevels.LowerRecoveryZone - _zoneLevels.LowerTradingZone) - Commission - Spread;
                 }
                 else
                 {
@@ -207,11 +207,11 @@ namespace ZoneRecoveryAlgorithm
             {
                 if (Position == MarketPosition.Long)
                 {
-                    return LotSize * (_zoneLevels.UpperTradingZone - _zoneLevels.UpperRecoveryZone) - Commission;
+                    return LotSize * (_zoneLevels.UpperTradingZone - _zoneLevels.UpperRecoveryZone) - Commission - Spread;
                 }
                 else if (Position == MarketPosition.Short)
                 {
-                    return - (LotSize * (_zoneLevels.UpperTradingZone - _zoneLevels.LowerRecoveryZone) + Commission);
+                    return - (LotSize * (_zoneLevels.UpperTradingZone - _zoneLevels.LowerRecoveryZone) + Commission + Spread);
                 }
                 else
                 {

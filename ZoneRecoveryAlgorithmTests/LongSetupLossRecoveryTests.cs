@@ -7,7 +7,7 @@ namespace ZoneRecoveryTests
     public class LongSetupLossRecoveryTests
     {        
         [Fact]
-        public void InitLongPositionSidewayPriceActionReturnsNoResult()
+        public void GenesisLongPositionSidewayPriceActionReturnsNoResult()
         {
             //Arrange
             var session = new Session(MarketPosition.Long, 4, 4, 1, 0, 0, 0, 3, 1);
@@ -20,7 +20,7 @@ namespace ZoneRecoveryTests
         }
 
         [Fact]
-        public void InitLongPositionUpwardPriceActionHitsTakeProfitLevel()
+        public void GenesisLongPositionUpwardPriceActionHitsTakeProfitLevel()
         {
             //Arrange
             var session = new Session(MarketPosition.Long, 4, 4, 1, 0, 0.34, 0.4, 3, 1);
@@ -34,7 +34,7 @@ namespace ZoneRecoveryTests
         }
 
         [Fact]
-        public void InitLongPositionDownwardPriceActionSpikeHitsZoneRecoveryTurn()
+        public void GenesisLongPositionDownwardPriceActionSpikeHitsZoneRecoveryTurn()
         {
             //Arrange
             var session = new Session(MarketPosition.Long, 4, 4, 1, 0, 0.34, 0.4, 3, 1);
@@ -48,7 +48,7 @@ namespace ZoneRecoveryTests
         }
 
         [Fact]
-        public void InitLongPositionDownwardPriceActionSpikeHitsMaximumSlippage()
+        public void GenesisLongPositionDownwardPriceActionSpikeHitsMaximumSlippage()
         {
             //Arrange
             var session = new Session(MarketPosition.Long, 4, 4, 1, 0, 0.34, 0.4, 3, 1);
