@@ -4,3 +4,12 @@
 /ZoneRecoveryCalculatorTests/bin/Debug/netcoreapp2.1
 /ZoneRecoveryCalculatorTests/obj/Debug/netcoreapp2.1
 /ZoneRecoveryCalculatorTests/obj
+/.vs/ZoneRecovery/DesignTimeBuild
+/ZoneRecoveryAlgorithmTests/bin/Debug/netcoreapp2.1
+/ZoneRecoveryAlgorithmTests/obj/Debug/netcoreapp2.1
+/ZoneRecoveryAlgorithmTests/obj
+/ZoneRecoveryStrategy/bin/Debug/netstandard2.0
+/ZoneRecoveryStrategy/obj/Debug/netstandard2.0
+/ZoneRecoveryStrategy/obj
+/packages/MSTest.TestAdapter.1.3.2
+/packages/MSTest.TestFramework.1.3.2

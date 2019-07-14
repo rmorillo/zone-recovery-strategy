@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28010.2003
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZoneRecovery", "ZoneRecovery\ZoneRecovery.csproj", "{FA0636C4-122E-4527-84DA-2D39E17A60A4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZoneRecoveryAlgorithm", "ZoneRecoveryStrategy\ZoneRecoveryAlgorithm.csproj", "{9EC9F5BF-0BA9-4918-B4A5-95242A172A0D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZoneRecoveryTests", "ZoneRecoveryCalculatorTests\ZoneRecoveryTests.csproj", "{ADB4BB9E-E645-4EED-B51C-E4D3CE8D895E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZoneRecoveryAlgorithmTests", "ZoneRecoveryAlgorithmTests\ZoneRecoveryAlgorithmTests.csproj", "{562EB0D1-CD70-418A-B11E-AE23547CED28}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -13,14 +13,14 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{FA0636C4-122E-4527-84DA-2D39E17A60A4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{FA0636C4-122E-4527-84DA-2D39E17A60A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{FA0636C4-122E-4527-84DA-2D39E17A60A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{FA0636C4-122E-4527-84DA-2D39E17A60A4}.Release|Any CPU.Build.0 = Release|Any CPU
-		{ADB4BB9E-E645-4EED-B51C-E4D3CE8D895E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{ADB4BB9E-E645-4EED-B51C-E4D3CE8D895E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{ADB4BB9E-E645-4EED-B51C-E4D3CE8D895E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{ADB4BB9E-E645-4EED-B51C-E4D3CE8D895E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9EC9F5BF-0BA9-4918-B4A5-95242A172A0D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9EC9F5BF-0BA9-4918-B4A5-95242A172A0D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9EC9F5BF-0BA9-4918-B4A5-95242A172A0D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9EC9F5BF-0BA9-4918-B4A5-95242A172A0D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{562EB0D1-CD70-418A-B11E-AE23547CED28}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{562EB0D1-CD70-418A-B11E-AE23547CED28}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{562EB0D1-CD70-418A-B11E-AE23547CED28}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{562EB0D1-CD70-418A-B11E-AE23547CED28}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
