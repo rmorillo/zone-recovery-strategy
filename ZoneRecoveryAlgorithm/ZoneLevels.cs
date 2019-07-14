@@ -6,17 +6,27 @@ namespace ZoneRecoveryAlgorithm
 {
     public class ZoneLevels
     {
-        public double UpperTradingZone { get; }
-        public double LowerTradingZone { get; }
-        public double UpperRecoveryZone { get; }
-        public double LowerRecoveryZone { get; }
+        public double UpperTradingZone { get; } = 0;
+        public double LowerTradingZone { get; } = 0;
+        public double UpperRecoveryZone { get; } = 0;
+        public double LowerRecoveryZone { get; } = 0;
 
-        public ZoneLevels(double entryPrice, int tradeZoneSize, int zoneRecoverySize)
-        {
-            UpperTradingZone = entryPrice + tradeZoneSize;
-            LowerTradingZone = entryPrice - zoneRecoverySize - tradeZoneSize;
-            UpperRecoveryZone = entryPrice;
-            LowerRecoveryZone = entryPrice - zoneRecoverySize;
+        public ZoneLevels(MarketPosition position, double entryPrice, int tradeZoneSize, int zoneRecoverySize)
+        {                        
+            if (position == MarketPosition.Long)
+            {
+                UpperTradingZone = entryPrice + tradeZoneSize;
+                LowerTradingZone = entryPrice - zoneRecoverySize - tradeZoneSize;
+                UpperRecoveryZone = entryPrice;
+                LowerRecoveryZone = entryPrice - zoneRecoverySize;
+            }
+            else if (position == MarketPosition.Short)
+            {
+                UpperTradingZone = entryPrice + zoneRecoverySize + tradeZoneSize;
+                LowerTradingZone = entryPrice - tradeZoneSize;
+                UpperRecoveryZone = entryPrice + zoneRecoverySize; 
+                LowerRecoveryZone = entryPrice;
+            }
         }
     }
 }
