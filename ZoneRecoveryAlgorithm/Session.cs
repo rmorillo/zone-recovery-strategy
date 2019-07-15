@@ -15,12 +15,13 @@ namespace ZoneRecoveryAlgorithm
 
         public double RecoveryTurns {  get { return ActivePosition.TurnIndex; } }
 
-        public Session(MarketPosition initPosition, double entryBidPrice, double entryAskPrice, double initLotSize, double spread, double commission, double slippage, int tradeZoneSize, int zoneRecoverySize)
+        public Session(MarketPosition initPosition, double entryBidPrice, double entryAskPrice, double initLotSize, double spread, double commission, double profitMarginRate, double slippage, int tradeZoneSize, int zoneRecoverySize)
         {
             var midPrice = (entryBidPrice + entryAskPrice) / 2d;            
             ZoneLevels = new ZoneLevels(initPosition, midPrice, tradeZoneSize, zoneRecoverySize);
-            
-            ActivePosition = new RecoveryTurn(this, null, ZoneLevels, initPosition, initPosition, entryBidPrice, entryAskPrice, initLotSize, spread, commission, slippage);
+            double profitMargin = tradeZoneSize * profitMarginRate;
+
+            ActivePosition = new RecoveryTurn(this, null, ZoneLevels, initPosition, initPosition, entryBidPrice, entryAskPrice, initLotSize, spread, commission, profitMargin, slippage);
         }
 
         public (PriceActionResult, RecoveryTurn) PriceAction(double bid, double ask)

@@ -12,13 +12,14 @@ namespace ZoneRecoveryAlgorithm
         private MarketPosition _entryPosition;
         public RecoveryTurn PreviousTurn;
         private double _commissionRate;
+        private double _profitMargin;
         private IActiveTurn _activeTurn;
 
         public MarketPosition Position { get; }
         public double EntryPrice { get; }
         public double LotSize { get; }
         public double Spread { get; }
-        public double Commission { get; }
+        public double Commission { get; }        
         public double MaxSlippageRate { get; }
         public bool IsActive { get; private set; }
         public int TurnIndex { get; }
@@ -29,7 +30,7 @@ namespace ZoneRecoveryAlgorithm
         private double _unrealizedGrossProfit;
         public double UnrealizedGrossProfit { get { return _unrealizedGrossProfit; } }
 
-        public RecoveryTurn(IActiveTurn activeTurn, RecoveryTurn previousTurn, ZoneLevels zoneLevel, MarketPosition entryPosition, MarketPosition turnPosition, double entryBidPrice, double entryAskPrice, double lotSize, double spread, double commissionRate, double slippage)
+        public RecoveryTurn(IActiveTurn activeTurn, RecoveryTurn previousTurn, ZoneLevels zoneLevel, MarketPosition entryPosition, MarketPosition turnPosition, double entryBidPrice, double entryAskPrice, double lotSize, double spread, double commissionRate, double profitMargin, double slippage)
         {
             _activeTurn = activeTurn;
 
@@ -61,6 +62,7 @@ namespace ZoneRecoveryAlgorithm
 
             _currentPrice = EntryPrice;
             _commissionRate = commissionRate;
+            _profitMargin = profitMargin;
 
             LotSize = lotSize;
             Commission = lotSize * commissionRate;
@@ -113,7 +115,7 @@ namespace ZoneRecoveryAlgorithm
 
                     IsActive = false;
 
-                    return (PriceActionResult.RecoveryLevelHit, new RecoveryTurn(_activeTurn, this, _zoneLevels, _entryPosition, newPosition, bid, ask, lotSize, spread, _commissionRate, MaxSlippageRate));
+                    return (PriceActionResult.RecoveryLevelHit, new RecoveryTurn(_activeTurn, this, _zoneLevels, _entryPosition, newPosition, bid, ask, lotSize, spread, _commissionRate, _profitMargin, MaxSlippageRate));
                 }
             }
             else
@@ -160,11 +162,11 @@ namespace ZoneRecoveryAlgorithm
 
             if (Position == MarketPosition.Long)
             {
-                return (LotSize * (EntryPrice - zoneLevels.LowerTradingZone) + Commission  + spread - previousTurnTargetNetReturns) / (zoneLevels.LowerRecoveryZone - zoneLevels.LowerTradingZone - _commissionRate);
+                return (LotSize * (EntryPrice - zoneLevels.LowerTradingZone) + Commission +  _profitMargin  + spread - previousTurnTargetNetReturns) / (zoneLevels.LowerRecoveryZone - zoneLevels.LowerTradingZone - _commissionRate);
             }
             else if (Position == MarketPosition.Short)
             {
-                return (LotSize * (zoneLevels.UpperTradingZone - EntryPrice) + Commission + spread - previousTurnTargetNetReturns) / (zoneLevels.UpperTradingZone - zoneLevels.UpperRecoveryZone - _commissionRate);
+                return (LotSize * (zoneLevels.UpperTradingZone - EntryPrice) + Commission + _profitMargin + spread - previousTurnTargetNetReturns) / (zoneLevels.UpperTradingZone - zoneLevels.UpperRecoveryZone - _commissionRate);
             }
             else
             {
@@ -192,11 +194,11 @@ namespace ZoneRecoveryAlgorithm
             {
                 if (Position == MarketPosition.Long)
                 {
-                    return - (LotSize * (_zoneLevels.UpperRecoveryZone - _zoneLevels.LowerTradingZone) + Commission + Spread);
+                    return - (LotSize * (_zoneLevels.UpperRecoveryZone - _zoneLevels.LowerTradingZone) + Commission + _profitMargin + Spread);
                 }
                 else if (Position == MarketPosition.Short)
                 {
-                    return LotSize * (_zoneLevels.LowerRecoveryZone - _zoneLevels.LowerTradingZone) - Commission - Spread;
+                    return LotSize * (_zoneLevels.LowerRecoveryZone - _zoneLevels.LowerTradingZone) - Commission - _profitMargin - Spread;
                 }
                 else
                 {
@@ -207,11 +209,11 @@ namespace ZoneRecoveryAlgorithm
             {
                 if (Position == MarketPosition.Long)
                 {
-                    return LotSize * (_zoneLevels.UpperTradingZone - _zoneLevels.UpperRecoveryZone) - Commission - Spread;
+                    return LotSize * (_zoneLevels.UpperTradingZone - _zoneLevels.UpperRecoveryZone) - Commission - _profitMargin - Spread;
                 }
                 else if (Position == MarketPosition.Short)
                 {
-                    return - (LotSize * (_zoneLevels.UpperTradingZone - _zoneLevels.LowerRecoveryZone) + Commission + Spread);
+                    return - (LotSize * (_zoneLevels.UpperTradingZone - _zoneLevels.LowerRecoveryZone) + Commission + _profitMargin + Spread);
                 }
                 else
                 {
