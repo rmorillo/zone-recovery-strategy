@@ -11,7 +11,7 @@ namespace ZoneRecoveryAlgorithm
         public double UpperRecoveryZone { get; } = 0;
         public double LowerRecoveryZone { get; } = 0;
 
-        public ZoneLevels(MarketPosition position, double entryPrice, int tradeZoneSize, int zoneRecoverySize)
+        public ZoneLevels(MarketPosition position, double entryPrice, double tradeZoneSize, double zoneRecoverySize)
         {                        
             if (position == MarketPosition.Long)
             {

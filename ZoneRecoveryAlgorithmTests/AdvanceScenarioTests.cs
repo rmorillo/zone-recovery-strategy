@@ -2,7 +2,7 @@ using System;
 using Xunit;
 using ZoneRecoveryAlgorithm;
 
-namespace ZoneRecoveryTests
+namespace ZoneRecoveryAlgorithm.UnitTests
 {
     public class AdvanceScenarioTests
     {
@@ -10,8 +10,8 @@ namespace ZoneRecoveryTests
         public void IncreaseInBidAskSpread_IncreasesLossRecoveryLotSize()
         {
             //Arrange
-            var zero_spread_session = new Session(MarketPosition.Long, 4, 4, 1, 0, 0.34, 0, 0.4, 3, 1);
-            var one_spread_session = new Session(MarketPosition.Long, 4.5, 3.5, 1, 0, 0.34, 0, 0.4, 3, 1);
+            var zero_spread_session = new Session(MarketPosition.Long, 4, 4, 1, 0.0001, 0, 0.34, 0, 0.4, 3, 1);
+            var one_spread_session = new Session(MarketPosition.Long, 4.5, 3.5, 1, 0.0001, 0, 0.34, 0, 0.4, 3, 1);
 
             //Act
             zero_spread_session.PriceAction(3, 3);  //Creates first recovery turn to the downside
@@ -24,13 +24,14 @@ namespace ZoneRecoveryTests
         [Fact]
         public void IncreaseInZoneRecoverySize_DecreasesLossRecoveryLotSize()
         {
-            var smallZoneSizeResult = Utility.GenerateLotSizes(5, MarketPosition.Long, 4, 4, 1, 0, 0.34, 0, 0.4, 3, 1);
+            
+            var smallZoneSizeResult = Utility.GenerateLotSizes(10, MarketPosition.Long, 1.1234, 1.1234, 1, 0, 0.0001, 0.67, 0.1, 1, 0.0003, 0.0001);
             var smallZoneSizeTotalLotSize = SumOfLotSizes(smallZoneSizeResult);
 
-            var mediumZoneSizeResult = Utility.GenerateLotSizes(5, MarketPosition.Long, 8, 8, 1, 0, 0.34, 0, 0.4, 6, 2);
+            var mediumZoneSizeResult = Utility.GenerateLotSizes(5, MarketPosition.Long, 1.1234, 1.1234, 1, 0, 0.0001, 0.67, 0, 1, 0.0006, 0.0002);
             var mediumZoneSizeTotalLotSize = SumOfLotSizes(mediumZoneSizeResult);
 
-            var highZoneSizeResult = Utility.GenerateLotSizes(5, MarketPosition.Long, 12, 12, 1, 0, 0.34, 0, 0.4, 9, 3);
+            var highZoneSizeResult = Utility.GenerateLotSizes(5, MarketPosition.Long, 1.1234, 1.1234, 1, 0, 0.0001, 0.67, 0, 1, 0.0009, 0.0003);
             var highZoneSizeTotalLotSize = SumOfLotSizes(highZoneSizeResult);
 
             Assert.True(smallZoneSizeTotalLotSize > mediumZoneSizeTotalLotSize && mediumZoneSizeTotalLotSize > highZoneSizeTotalLotSize);

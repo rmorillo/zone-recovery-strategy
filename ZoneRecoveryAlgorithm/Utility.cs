@@ -4,11 +4,11 @@ namespace ZoneRecoveryAlgorithm
 {
     public class Utility
     {
-        public static (MarketPosition, double)[] GenerateLotSizes(double maxTurns, MarketPosition initPosition, double entryBidPrice, double entryAskPrice, double initLotSize, double spread, double commission, double profitMargin, double slippage, int tradeZoneSize, int zoneRecoverySize)
+        public static (MarketPosition, double)[] GenerateLotSizes(double maxTurns, MarketPosition initPosition, double entryBidPrice, double entryAskPrice, double initLotSize, double spread, double pipFactor, double commission, double profitMargin, double slippage, double tradeZoneSize, double zoneRecoverySize)
         {
             var lotSizes = new List<(MarketPosition, double)>() { (initPosition, initLotSize) };
 
-            var session = new Session(initPosition, entryBidPrice, entryAskPrice, initLotSize, spread, commission, profitMargin, slippage, tradeZoneSize, zoneRecoverySize);
+            var session = new Session(initPosition, entryBidPrice, entryAskPrice, initLotSize, spread, pipFactor, commission, profitMargin, slippage, tradeZoneSize, zoneRecoverySize);
 
             var position = initPosition;
 

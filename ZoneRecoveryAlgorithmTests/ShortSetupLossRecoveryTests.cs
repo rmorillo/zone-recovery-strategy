@@ -2,7 +2,7 @@
 using Xunit;
 using ZoneRecoveryAlgorithm;
 
-namespace ZoneRecoveryTests
+namespace ZoneRecoveryAlgorithm.UnitTests
 {
     public class ShortSetupLossRecoveryTests
     {
@@ -10,7 +10,7 @@ namespace ZoneRecoveryTests
         public void GenesisShortPositionSidewayPriceActionReturnsNoResult()
         {
             //Arrange
-            var session = new Session(MarketPosition.Short, 3, 3, 1, 0, 0, 0, 0, 3, 1);
+            var session = new Session(MarketPosition.Short, 3, 3, 1, 0, 0.0001,  0, 0, 0, 3, 1);
 
             //Act
             (var result, _) = session.PriceAction(3, 3);  //No price change
@@ -23,7 +23,7 @@ namespace ZoneRecoveryTests
         public void GenesisShortPositionDownwardPriceActionHitsTakeProfitLevel()
         {
             //Arrange
-            var session = new Session(MarketPosition.Short, 3, 3, 1, 0, 0.34, 0, 0.4, 3, 1);
+            var session = new Session(MarketPosition.Short, 3, 3, 1, 0, 0.0001,  0.34, 0, 0.4, 3, 1);
 
             //Act
             (var result, _) = session.PriceAction(0, 0); //Hits take profit level
@@ -37,7 +37,7 @@ namespace ZoneRecoveryTests
         public void GenesisShortPositionUpwardPriceActionSpikeHitsZoneRecoveryTurn()
         {
             //Arrange
-            var session = new Session(MarketPosition.Short, 3, 3, 1, 0, 0.34, 0, 0.4, 3, 1);
+            var session = new Session(MarketPosition.Short, 3, 3, 1, 0, 0.0001,  0.34, 0, 0.4, 3, 1);
 
             //Act
             (var result, _) = session.PriceAction(4, 4); //First recovery turn to the upside
@@ -51,7 +51,7 @@ namespace ZoneRecoveryTests
         public void GenesisShortPositionUpwardPriceActionSpikeHitsMaximumSlippage()
         {
             //Arrange
-            var session = new Session(MarketPosition.Short, 3, 3, 1, 0, 0.34, 0, 0.4, 3, 1);
+            var session = new Session(MarketPosition.Short, 3, 3, 1, 0, 0.0001,  0.34, 0, 0.4, 3, 1);
 
             //Act            
             (var result, _) = session.PriceAction(4.5, 4.5); //Exceeded recovery turn level by 50%
@@ -64,7 +64,7 @@ namespace ZoneRecoveryTests
         public void FirstTurnShortPositionUpwardPriceActionHitsTakeProfit()
         {
             //Arrange
-            var session = new Session(MarketPosition.Short, 3, 3, 1, 0, 0.34, 0, 0.4, 3, 1);
+            var session = new Session(MarketPosition.Short, 3, 3, 1, 0, 0.0001,  0.34, 0, 0.4, 3, 1);
 
             session.PriceAction(4, 4);  //First recovery turn to the upside
 
@@ -80,7 +80,7 @@ namespace ZoneRecoveryTests
         public void FirstTurnLongPositionDownwarddPriceActionHitsZoneRecoveryLevel()
         {
             //Arrange
-            var session = new Session(MarketPosition.Short, 3, 3, 1, 0, 0.34, 0, 0.4, 3, 1);
+            var session = new Session(MarketPosition.Short, 3, 3, 1, 0, 0.0001,  0.34, 0, 0.4, 3, 1);
 
             session.PriceAction(4, 4); //First recovery turn to the upside
 
@@ -96,7 +96,7 @@ namespace ZoneRecoveryTests
         public void SecondTurnShortPositionDownwardPriceActionHitsTakeProfitLevel()
         {
             //Arrange
-            var session = new Session(MarketPosition.Short, 3, 3, 1, 0, 0.34, 0, 0.4, 3, 1);
+            var session = new Session(MarketPosition.Short, 3, 3, 1, 0, 0.0001,  0.34, 0, 0.4, 3, 1);
 
             session.PriceAction(4, 4); //First recovery turn to the upside
             session.PriceAction(3, 3); //Second recovery turn to the downside
@@ -113,7 +113,7 @@ namespace ZoneRecoveryTests
         public void SecondTurnShortPositionUpwardPriceActionHitsZoneRecoveryLevel()
         {
             //Arrange
-            var session = new Session(MarketPosition.Short, 3, 3, 1, 0, 0.34, 0, 0.4, 3, 1);
+            var session = new Session(MarketPosition.Short, 3, 3, 1, 0, 0.0001,  0.34, 0, 0.4, 3, 1);
 
             session.PriceAction(4, 4); //First recovery turn to the upside
             session.PriceAction(3, 3); //Second recovery turn to the downside
@@ -130,7 +130,7 @@ namespace ZoneRecoveryTests
         public void ThirdTurnLongPositionDownwardPriceActionHitsZoneRecoveryLevel()
         {
             //Arrange            
-            var session = new Session(MarketPosition.Short, 3, 3, 1, 0, 0.34, 0, 0.4, 3, 1);
+            var session = new Session(MarketPosition.Short, 3, 3, 1, 0, 0.0001,  0.34, 0, 0.4, 3, 1);
 
             session.PriceAction(4, 4); //First recovery turn to the upside
             session.PriceAction(3, 3); //Second recovery turn to the downside
@@ -148,7 +148,7 @@ namespace ZoneRecoveryTests
         public void ThirdTurnLongPositionUpwardPriceActionHitsTakeProfitLevel()
         {
             //Arrange
-            var session = new Session(MarketPosition.Short, 3, 3, 1, 0, 0.34, 0, 0.4, 3, 1);
+            var session = new Session(MarketPosition.Short, 3, 3, 1, 0, 0.0001,  0.34, 0, 0.4, 3, 1);
 
             session.PriceAction(4, 4); //First recovery turn to the upside
             session.PriceAction(3, 3); //Second recovery turn to the downside
@@ -167,7 +167,7 @@ namespace ZoneRecoveryTests
         public void FourthTurnShortPositionUpwardPriceActionHitsZoneRecoveryLevel()
         {
             //Arrange
-            var session = new Session(MarketPosition.Short, 3, 3, 1, 0, 0.34, 0, 0.4, 3, 1);
+            var session = new Session(MarketPosition.Short, 3, 3, 1, 0, 0.0001,  0.34, 0, 0.4, 3, 1);
 
             session.PriceAction(4, 4); //First recovery turn to the upside
             session.PriceAction(3, 3); //Second recovery turn to the downside
@@ -185,7 +185,7 @@ namespace ZoneRecoveryTests
         [Fact]
         public void FourthTurnShortPositionDownwardPriceActionHitsTakeProfitLevel()
         {
-            var session = new Session(MarketPosition.Short, 3, 3, 1, 0, 0.34, 0, 0.4, 3, 1);
+            var session = new Session(MarketPosition.Short, 3, 3, 1, 0, 0.0001,  0.34, 0, 0.4, 3, 1);
 
             session.PriceAction(4, 4); //First recovery turn to the upside
             session.PriceAction(3, 3); //Second recovery turn to the downside
@@ -205,7 +205,7 @@ namespace ZoneRecoveryTests
         public void FifthTurnLongPositionDownwardPriceActionHitsZoneRecoveryLevel()
         {
             //Arrange
-            var session = new Session(MarketPosition.Short, 3, 3, 1, 0, 0.34, 0, 0.4, 3, 1);
+            var session = new Session(MarketPosition.Short, 3, 3, 1, 0, 0.0001,  0.34, 0, 0.4, 3, 1);
 
             session.PriceAction(4, 4); //First recovery turn to the upside
             session.PriceAction(3, 3); //Second recovery turn to the downside
@@ -225,7 +225,7 @@ namespace ZoneRecoveryTests
         public void FifthTurnShortPositionDownwardPriceActionHitsTakeProfitLevel()
         {
             //Arrange
-            var session = new Session(MarketPosition.Short, 3, 3, 1, 0, 0.34, 0, 0.4, 3, 1);
+            var session = new Session(MarketPosition.Short, 3, 3, 1, 0, 0.0001,  0.34, 0, 0.4, 3, 1);
 
             session.PriceAction(4, 4); //First recovery turn to the upside
             session.PriceAction(3, 3); //Second recovery turn to the downside
