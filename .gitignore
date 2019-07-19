@@ -31,3 +31,13 @@
 /ZoneRecoveryBacktester/bin/Debug/netcoreapp2.1
 /ZoneRecoveryBacktester/obj/Debug/netcoreapp2.1
 /ZoneRecoveryBacktester/obj
+/CTraderCAlgo/obj/Debug/netstandard2.0/*.pdb
+/CTraderCAlgo/obj/Debug/netstandard2.0/*.dll
+/CTraderCAlgo/obj/Debug/netstandard2.0/*.cache
+/CTraderCAlgo/obj/Debug/netstandard2.0
+/CTraderCAlgo/obj/*.targets
+/CTraderCAlgo/obj/*.cache
+/CTraderCAlgo/obj/*.props
+/CTraderCAlgo/bin/Debug/netstandard2.0/*.pdb
+/CTraderCAlgo/bin/Debug/netstandard2.0
+/CTraderCAlgo/obj

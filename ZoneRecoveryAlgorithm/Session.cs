@@ -3,8 +3,8 @@
 namespace ZoneRecoveryAlgorithm
 {           
     public class Session: IActiveTurn
-    {               
-
+    {
+        private IZoneRecoverySettings _settings;
         public RecoveryTurn ActivePosition { get; private set; }
         public ZoneLevels ZoneLevels { get; }
 
@@ -15,13 +15,15 @@ namespace ZoneRecoveryAlgorithm
 
         public double RecoveryTurns {  get { return ActivePosition.TurnIndex; } }
 
-        public Session(MarketPosition initPosition, double entryBidPrice, double entryAskPrice, double initLotSize, double spread, double pipFactor, double commission, double profitMarginRate, double slippage, double tradeZoneSize, double zoneRecoverySize)
+        public Session(MarketPosition initPosition, double entryBidPrice, double entryAskPrice, double tradeZoneSize, double zoneRecoverySize, IZoneRecoverySettings settings)
         {
+            _settings = settings;
+
             var midPrice = (entryBidPrice + entryAskPrice) / 2d;            
             ZoneLevels = new ZoneLevels(initPosition, midPrice, tradeZoneSize, zoneRecoverySize);
-            double profitMargin = tradeZoneSize * profitMarginRate;
+            double profitMargin = tradeZoneSize * _settings.ProfitMarginRate;
 
-            ActivePosition = new RecoveryTurn(this, null, ZoneLevels, initPosition, initPosition, entryBidPrice, entryAskPrice, initLotSize, pipFactor, spread, commission, profitMargin, slippage);
+            ActivePosition = new RecoveryTurn(this, null, ZoneLevels, initPosition, initPosition, entryBidPrice, entryAskPrice, _settings.InitLotSize, _settings);
         }
 
         public (PriceActionResult, RecoveryTurn) PriceAction(double bid, double ask)

@@ -6,9 +6,11 @@ namespace ZoneRecoveryAlgorithm
     {
         public static (MarketPosition, double)[] GenerateLotSizes(double maxTurns, MarketPosition initPosition, double entryBidPrice, double entryAskPrice, double initLotSize, double spread, double pipFactor, double commission, double profitMargin, double slippage, double tradeZoneSize, double zoneRecoverySize)
         {
+            var zoneRecovery = new ZoneRecovery(initLotSize, pipFactor, commission, profitMargin, slippage);
+
             var lotSizes = new List<(MarketPosition, double)>() { (initPosition, initLotSize) };
 
-            var session = new Session(initPosition, entryBidPrice, entryAskPrice, initLotSize, spread, pipFactor, commission, profitMargin, slippage, tradeZoneSize, zoneRecoverySize);
+            var session = zoneRecovery.CreateSession(initPosition, entryBidPrice, entryAskPrice, tradeZoneSize, zoneRecoverySize);
 
             var position = initPosition;
 

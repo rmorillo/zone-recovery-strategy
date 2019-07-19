@@ -19,6 +19,9 @@ namespace ZoneRecoveryBacktester
             var marketPosition = MarketPosition.Long;
             double profitMargin = 0.01;
             double pipFactor = 0.0001;
+            double slippage = 1;
+
+            var _zoneRecovery = new ZoneRecovery(lotSize, pipFactor, commissionRate, profitMargin, slippage);
 
             var random = new Random(unchecked((int)DateTime.Now.Ticks));
 
@@ -28,7 +31,7 @@ namespace ZoneRecoveryBacktester
 
             double midPrice = (initQuote.Bid + initQuote.Ask) / 2d;
 
-            var session = new Session(marketPosition, initQuote.Bid, initQuote.Ask, lotSize, pipFactor, spread, commissionRate, profitMargin, 0.4, tradeZone, recoveryZone);
+            var session = _zoneRecovery.CreateSession(marketPosition, initQuote.Bid, initQuote.Ask, tradeZone, recoveryZone);
 
             int ticks = 0;
 
@@ -49,7 +52,7 @@ namespace ZoneRecoveryBacktester
                     {                        
                         return;
                     }                                        
-                    session = new Session(marketPosition, nextQuote.Bid, nextQuote.Ask, lotSize, pipFactor, spread, commissionRate, profitMargin, 0.4, tradeZone, recoveryZone);
+                    session = _zoneRecovery.CreateSession(marketPosition, nextQuote.Bid, nextQuote.Ask, tradeZone, recoveryZone);
                     ticks = 0;
                     positionCount++;
                     

@@ -11,11 +11,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Libraries", "Libraries", "{
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BackPool", "..\backpool-csharp\src\BackPool\BackPool.csproj", "{C290106D-15E0-44DB-B182-3C8DB6669319}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZoneRecoveryBacktester", "ZoneRecoveryBacktester\ZoneRecoveryBacktester.csproj", "{6B38F8FF-E083-4B29-91CC-8F1033568B73}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ZoneRecoveryBacktester", "ZoneRecoveryBacktester\ZoneRecoveryBacktester.csproj", "{6B38F8FF-E083-4B29-91CC-8F1033568B73}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MarketProbe", "MarketProbe\MarketProbe.csproj", "{6544503E-F6F9-439F-98F0-A5042E297480}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MarketProbe", "MarketProbe\MarketProbe.csproj", "{6544503E-F6F9-439F-98F0-A5042E297480}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MarketProbe.UnitTests", "MarketProbe.UnitTests\MarketProbe.UnitTests.csproj", "{DCA68287-3BA8-4B3C-9455-B02B3EF45F11}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MarketProbe.UnitTests", "MarketProbe.UnitTests\MarketProbe.UnitTests.csproj", "{DCA68287-3BA8-4B3C-9455-B02B3EF45F11}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BrokerAdapters", "BrokerAdapters", "{EF76D75D-F0D9-4A04-9AE3-77A382E18F0F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CTraderCAlgo", "CTraderCAlgo\CTraderCAlgo.csproj", "{04C8F6D8-B9CD-49B1-AEA7-23FEFF22E32E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -47,6 +51,10 @@ Global
 		{DCA68287-3BA8-4B3C-9455-B02B3EF45F11}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DCA68287-3BA8-4B3C-9455-B02B3EF45F11}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DCA68287-3BA8-4B3C-9455-B02B3EF45F11}.Release|Any CPU.Build.0 = Release|Any CPU
+		{04C8F6D8-B9CD-49B1-AEA7-23FEFF22E32E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{04C8F6D8-B9CD-49B1-AEA7-23FEFF22E32E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{04C8F6D8-B9CD-49B1-AEA7-23FEFF22E32E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{04C8F6D8-B9CD-49B1-AEA7-23FEFF22E32E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -55,6 +63,7 @@ Global
 		{C290106D-15E0-44DB-B182-3C8DB6669319} = {F7076EF4-0100-490A-B813-E8F4115B3F03}
 		{6544503E-F6F9-439F-98F0-A5042E297480} = {F7076EF4-0100-490A-B813-E8F4115B3F03}
 		{DCA68287-3BA8-4B3C-9455-B02B3EF45F11} = {F7076EF4-0100-490A-B813-E8F4115B3F03}
+		{04C8F6D8-B9CD-49B1-AEA7-23FEFF22E32E} = {EF76D75D-F0D9-4A04-9AE3-77A382E18F0F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6C76ECF6-6839-42E5-B546-9D9E5D6D2B55}
