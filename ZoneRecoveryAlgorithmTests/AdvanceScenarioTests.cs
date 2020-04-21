@@ -32,17 +32,20 @@ namespace ZoneRecoveryAlgorithm.UnitTests
         public void IncreaseInZoneRecoverySize_DecreasesLossRecoveryLotSize()
         {
             
-            var smallZoneSizeResult = Utility.GenerateLotSizes(5, MarketPosition.Long, 1.1234, 1.1234, 1, 0, 0.0001, 0.67, 0, 1, 0.0003, 0.0001);
+            var smallZoneSizeResult = Utility.GenerateLotSizes(5, MarketPosition.Long, 1.1234, 1.1234, 1, 0, 0.0001, 0.67, 0, 0, 0.0003, 0.0001);
             var smallZoneSizeTotalLotSize = SumOfLotSizes(smallZoneSizeResult);
 
-            var mediumZoneSizeResult = Utility.GenerateLotSizes(5, MarketPosition.Long, 1.1234, 1.1234, 1, 0, 0.0001, 0.67, 0, 1, 0.0006, 0.0002);
+            var mediumZoneSizeResult = Utility.GenerateLotSizes(5, MarketPosition.Long, 1.1234, 1.1234, 1, 0, 0.0001, 0.67, 0, 0, 0.0006, 0.0002);
             var mediumZoneSizeTotalLotSize = SumOfLotSizes(mediumZoneSizeResult);
 
-            var highZoneSizeResult = Utility.GenerateLotSizes(5, MarketPosition.Long, 1.1234, 1.1234, 1, 0, 0.0001, 0.67, 0, 1, 0.0009, 0.0003);
+            //var highZoneSizeResult = Utility.GenerateLotSizes(10, MarketPosition.Long, 1.1236, 1.1234, 1, 0, 0.0001, 0, 0, 0, 0.0009, 0.0003);
+            //var highZoneSizeResult = Utility.GenerateLotSizes(10, MarketPosition.Long, 1.1234, 1.1234, 1, 0, 0.0001, 0.67, 0, 0, 0.015, 0.005);
+            var highZoneSizeResult = Utility.GenerateLotSizes(10, MarketPosition.Long, 1.1234, 1.1234, 1, 0, 0.0001, 0.67, 0, 0, 0.0021, 0.0007);
             var highZoneSizeTotalLotSize = SumOfLotSizes(highZoneSizeResult);
+            var highZoneSizeNetTotalListSize = NetSumOfLotSizes(highZoneSizeResult);
 
             Assert.True(smallZoneSizeTotalLotSize > mediumZoneSizeTotalLotSize && mediumZoneSizeTotalLotSize > highZoneSizeTotalLotSize);
-        }        
+        }
 
         private double SumOfLotSizes((MarketPosition, double)[] lotSizes)
         {
@@ -50,6 +53,25 @@ namespace ZoneRecoveryAlgorithm.UnitTests
             foreach((_, var lotSize) in lotSizes)
             {
                 sum += lotSize;
+            }
+
+            return sum;
+        }
+
+        private double NetSumOfLotSizes((MarketPosition, double)[] lotSizes)
+        {
+            var initPosition = lotSizes[0].Item1;
+            double sum = 0;
+            foreach ((var position, var lotSize) in lotSizes)
+            {
+                if (initPosition == position)
+                {
+                    sum += lotSize;
+                }
+                else
+                {
+                    sum -= lotSize;
+                }
             }
 
             return sum;

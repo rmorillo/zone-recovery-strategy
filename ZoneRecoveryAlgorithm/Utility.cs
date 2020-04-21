@@ -28,7 +28,7 @@ namespace ZoneRecoveryAlgorithm
                     bid = session.ZoneLevels.UpperRecoveryZone;                    
                 }
 
-                ask = bid;
+                ask = bid + spread;
 
                 var (result, turn)  = session.PriceAction(bid, ask);
 

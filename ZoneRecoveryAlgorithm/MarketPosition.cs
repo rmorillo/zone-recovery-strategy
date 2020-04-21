@@ -1,10 +1,12 @@
-﻿namespace ZoneRecoveryAlgorithm
+﻿using System;
+
+namespace ZoneRecoveryAlgorithm
 {
     public enum MarketPosition
     {
-        None,
-        Long,
-        Short
+        None = 0,
+        Long = 1,
+        Short = -1
     }
 
     public static class Extensions
@@ -17,6 +19,11 @@
                 return MarketPosition.Long;
             else
                 return position;
+        }
+
+        public static sbyte GetValue(this MarketPosition position)
+        {
+            return (sbyte)position;
         }
     }
 }

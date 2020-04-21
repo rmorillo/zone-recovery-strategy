@@ -247,5 +247,26 @@ namespace ZoneRecoveryAlgorithm.UnitTests
             Assert.Equal(PriceActionResult.TakeProfitLevelHit, result);
             Assert.True(Math.Round(session.UnrealizedNetProfit, 5) == 0);
         }
+
+        [Fact]
+        public void FifthTurnShortPositionDownwardPriceActionHitsBeyondTakeProfitLevel()
+        {
+            //Arrange
+            var session = _zoneRecovery.CreateSession(MarketPosition.Long, 1.1234, 1.1234, 0.0006, 0.0003);
+
+            session.PriceAction(1.1231, 1.1231); //First recovery turn to the downside
+            session.PriceAction(1.1234, 1.1234); //Second recovery turn to the upside
+            session.PriceAction(1.1231, 1.1231); //Third recovery turn to the downside
+            session.PriceAction(1.1234, 1.1234); //Fourth recovery turn to the upside
+            session.PriceAction(1.1231, 1.1231); //Fifth recovery turn to the downside
+
+            //Act 
+            (var result, _) = session.PriceAction(1.1210, 1.1210); //Hits take profit level
+
+            //Assert
+            Assert.Equal(5, session.RecoveryTurns);
+            Assert.Equal(PriceActionResult.TakeProfitLevelHit, result);
+            Assert.True(session.UnrealizedNetProfit > 0);
+        }
     }
 }

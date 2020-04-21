@@ -13,7 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ZoneRecoveryAlgorithm\ZoneRecoveryAlgorithm.csproj" />
+    <ProjectReference Include="..\ZoneRecoveryStrategy\ZoneRecoveryStrategy.csproj" />
   </ItemGroup>
 
 </Project>

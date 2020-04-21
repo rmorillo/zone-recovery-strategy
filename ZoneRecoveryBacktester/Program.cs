@@ -11,13 +11,13 @@ namespace ZoneRecoveryBacktester
         {
             double equity = 10000;
             double lotSize = 1;
-            double commissionRate = 0.34;
+            double commissionRate = 0.67;
             double tradeZone = 15;
             double spread = 0;
             double maximumTurns = 100;
             double recoveryZone = tradeZone / 3;
             var marketPosition = MarketPosition.Long;
-            double profitMargin = 0.01;
+            double profitMargin = 0;
             double pipFactor = 0.0001;
             double slippage = 1;
 
@@ -47,7 +47,7 @@ namespace ZoneRecoveryBacktester
                 {
                     equity += (session.UnrealizedNetProfit * lotSize);
                     Console.WriteLine($"TP Hit in {session.RecoveryTurns} turns, {session.TotalLotSize} lots, {ticks} ticks, {session.UnrealizedNetProfit} returns, {equity} equity balance");
-                    Thread.Sleep(100);
+                    Thread.Sleep(500);
                     if (positionCount > 300)
                     {                        
                         return;

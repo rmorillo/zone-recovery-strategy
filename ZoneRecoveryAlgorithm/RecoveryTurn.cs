@@ -227,5 +227,15 @@ namespace ZoneRecoveryAlgorithm
             }
         }
 
+        public (double, double) CalculateMarketOrderSlippageRate(double orderLotSize, double orderPrice)
+        {
+            //TODO: Consider Market position if good or bad slippage
+            return ((orderLotSize - LotSize) / LotSize, (orderPrice - EntryPrice) / EntryPrice);
+        }
+
+        public bool SyncPosition(double orderLotSize, double orderPrice)
+        {
+            return true;
+        }
     }
 }
