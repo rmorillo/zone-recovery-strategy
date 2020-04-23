@@ -97,13 +97,24 @@ namespace ZoneRecoveryStrategy
                         throw new Exception("Invalid position.");
                     }
 
-                    var (isSuccessful, message) = _marketOrder(recoveryTurn.LotSize, entryPrice, recoveryTurn.Position.GetValue(), 0, 0);
+                    var (isSuccessful, message) = _marketOrder(recoveryTurn.LotSize, entryPrice, recoveryTurn.Position.GetValue(), recoveryTurn.ZoneLevels.StopLossLevel, recoveryTurn.ZoneLevels.TakeProfitLevel);
 
                     if (isSuccessful)
                     {
                         var (lotSizeSlippageRate, entryPriceSlippageRage) = recoveryTurn.CalculateMarketOrderSlippageRate(recoveryTurn.LotSize, entryPrice);
 
                         recoveryTurn.SyncPosition(recoveryTurn.LotSize, entryPrice);
+                    }
+
+                    double limitOrderLotSize = recoveryTurn.GetNextTurnLotSize();
+
+                    var limitOrderZoneLevels = recoveryTurn.ZoneLevels.Reverse();
+
+                    var (isLimitSuccessful, limitOrderMessage) = _limitOrder(limitOrderLotSize, limitOrderZoneLevels.EntryPrice, limitOrderZoneLevels.Position.GetValue(), limitOrderZoneLevels.StopLossLevel, limitOrderZoneLevels.TakeProfitLevel);
+
+                    if (isLimitSuccessful)
+                    {
+
                     }
 
                 }
