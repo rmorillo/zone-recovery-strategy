@@ -8,6 +8,8 @@ namespace ZoneRecoveryStrategy
         private ZoneRecovery _zoneRecovery;
         private Session _session;
         private double _initLotSize;
+        private Delegates.MarketOrder _marketOrder;
+        private Delegates.LimitOrder _limitOrder;
 
         public void Initialize(double initLotSize, double pipFactor, double commissionRate, double profitMarginRate, double slippage)
         {
@@ -15,33 +17,57 @@ namespace ZoneRecoveryStrategy
             _zoneRecovery = new ZoneRecovery(initLotSize, pipFactor, commissionRate, profitMarginRate, slippage);
         }
 
-        public bool StartSession(MarketPosition position, double entryBidPrice, double entryAskPrice, double tradeZoneSize, double zoneRecoverySize, Delegates.MarketOrder firstMarketOrder)
+        public bool StartSession(MarketPosition position, double entryBidPrice, double entryAskPrice, double tradeZoneSize, double zoneRecoverySize, Delegates.MarketOrder marketOrder, Delegates.LimitOrder limitOrder)
         {
+            _marketOrder = marketOrder;
+            _limitOrder = limitOrder;
+
+            if (position == MarketPosition.None)
+            {
+                throw new Exception("Invalid position.");                
+            }
+
+            _session = _zoneRecovery.CreateSession(position, entryBidPrice, entryAskPrice, tradeZoneSize, zoneRecoverySize);
+
             double entryPrice = double.NaN;
+            double stopLossLevel = double.NaN;
+            double takeProfitLevel = double.NaN;
 
             if (position == MarketPosition.Long)
             {
                 entryPrice = entryAskPrice;
+                stopLossLevel = _session.ZoneLevels.StopLossLevel;
+                takeProfitLevel = _session.ZoneLevels.TakeProfitLevel;
             }
             else if (position == MarketPosition.Short)
             {
                 entryPrice = entryBidPrice;
+                stopLossLevel = _session.ZoneLevels.TakeProfitLevel;
+                takeProfitLevel = _session.ZoneLevels.StopLossLevel;
             }
-            else
-            {
-                throw new Exception("Invalid position.");
-            }
+          
+            var (isSuccessful, message) = _marketOrder(_initLotSize, entryPrice, position.GetValue(), stopLossLevel, takeProfitLevel);
 
-            var (isSuccessful, message, (orderLotSize, orderEntryPrice, orderSpread)) = firstMarketOrder(_initLotSize, entryPrice, position.GetValue(), 0, 0);
             if (isSuccessful)
             {
-                _session = _zoneRecovery.CreateSession(position, entryBidPrice, entryAskPrice, tradeZoneSize, zoneRecoverySize);
+                
+            }
+
+            double limitOrderLotSize = _session.ActivePosition.GetNextTurnLotSize();
+
+            var limitOrderZoneLevels = _session.ZoneLevels.Reverse();
+
+            var (isLimitSuccessful, limitOrderMessage) = _limitOrder(limitOrderLotSize, limitOrderZoneLevels.EntryPrice, limitOrderZoneLevels.Position.GetValue(), limitOrderZoneLevels.StopLossLevel, limitOrderZoneLevels.TakeProfitLevel);
+
+            if (isLimitSuccessful)
+            {
+
             }
 
             return isSuccessful;
         }
 
-        public PriceActionResult PriceTick(long timestamp, double bid, double ask, Delegates.MarketOrder recoveryTurnMarketOrder)
+        public PriceActionResult PriceTick(long timestamp, double bid, double ask)
         {
             if (_session == null)
             {
@@ -71,13 +97,13 @@ namespace ZoneRecoveryStrategy
                         throw new Exception("Invalid position.");
                     }
 
-                    var (isSuccessful, message, (orderLotSize, orderEntryPrice, orderSpread)) = recoveryTurnMarketOrder(recoveryTurn.LotSize, entryPrice, recoveryTurn.Position.GetValue(), 0, 0);
+                    var (isSuccessful, message) = _marketOrder(recoveryTurn.LotSize, entryPrice, recoveryTurn.Position.GetValue(), 0, 0);
 
                     if (isSuccessful)
                     {
-                        var (lotSizeSlippageRate, entryPriceSlippageRage) = recoveryTurn.CalculateMarketOrderSlippageRate(orderLotSize, orderEntryPrice);
+                        var (lotSizeSlippageRate, entryPriceSlippageRage) = recoveryTurn.CalculateMarketOrderSlippageRate(recoveryTurn.LotSize, entryPrice);
 
-                        recoveryTurn.SyncPosition(orderLotSize, orderEntryPrice);
+                        recoveryTurn.SyncPosition(recoveryTurn.LotSize, entryPrice);
                     }
 
                 }

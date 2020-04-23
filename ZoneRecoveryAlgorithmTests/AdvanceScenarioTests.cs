@@ -38,9 +38,9 @@ namespace ZoneRecoveryAlgorithm.UnitTests
             var mediumZoneSizeResult = Utility.GenerateLotSizes(5, MarketPosition.Long, 1.1234, 1.1234, 1, 0, 0.0001, 0.67, 0, 0, 0.0006, 0.0002);
             var mediumZoneSizeTotalLotSize = SumOfLotSizes(mediumZoneSizeResult);
 
-            //var highZoneSizeResult = Utility.GenerateLotSizes(10, MarketPosition.Long, 1.1236, 1.1234, 1, 0, 0.0001, 0, 0, 0, 0.0009, 0.0003);
+            var highZoneSizeResult = Utility.GenerateLotSizes(5, MarketPosition.Long, 1.1234, 1.1234, 1, 0, 0.0001, 0.67, 0, 0, 0.0009, 0.0003);
             //var highZoneSizeResult = Utility.GenerateLotSizes(10, MarketPosition.Long, 1.1234, 1.1234, 1, 0, 0.0001, 0.67, 0, 0, 0.015, 0.005);
-            var highZoneSizeResult = Utility.GenerateLotSizes(10, MarketPosition.Long, 1.1234, 1.1234, 1, 0, 0.0001, 0.67, 0, 0, 0.0021, 0.0007);
+            //var highZoneSizeResult = Utility.GenerateLotSizes(10, MarketPosition.Long, 1.1234, 1.1234, 1, 0, 0.0001, 0.67, 0, 0, 0.0021, 0.0007);
             var highZoneSizeTotalLotSize = SumOfLotSizes(highZoneSizeResult);
             var highZoneSizeNetTotalListSize = NetSumOfLotSizes(highZoneSizeResult);
 

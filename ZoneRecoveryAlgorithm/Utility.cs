@@ -12,23 +12,12 @@ namespace ZoneRecoveryAlgorithm
 
             var session = zoneRecovery.CreateSession(initPosition, entryBidPrice, entryAskPrice, tradeZoneSize, zoneRecoverySize);
 
-            var position = initPosition;
+            var position = initPosition;            
 
-            for(int index=0; index<maxTurns; index++)
+            for (int index=0; index<maxTurns; index++)
             {
-                double bid = double.NaN;
-                double ask = double.NaN;
-                  
-                if (position == MarketPosition.Long)
-                {
-                    bid = session.ZoneLevels.LowerRecoveryZone;                                        
-                }
-                else if (position == MarketPosition.Short)
-                {
-                    bid = session.ZoneLevels.UpperRecoveryZone;                    
-                }
-
-                ask = bid + spread;
+                double bid = session.ActivePosition.ZoneLevels.LossRecoveryLevel;
+                double ask = bid + spread;                                  
 
                 var (result, turn)  = session.PriceAction(bid, ask);
 
@@ -41,7 +30,7 @@ namespace ZoneRecoveryAlgorithm
                     throw new System.Exception("Unexpected price action result!");
                 }
 
-                position = position.Reverse();
+                position = position.Reverse();                
             }
 
             return lotSizes.ToArray();

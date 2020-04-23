@@ -6,27 +6,96 @@ namespace ZoneRecoveryAlgorithm
 {
     public class ZoneLevels
     {
-        public double UpperTradingZone { get; } = 0;
-        public double LowerTradingZone { get; } = 0;
-        public double UpperRecoveryZone { get; } = 0;
-        public double LowerRecoveryZone { get; } = 0;
+        public MarketPosition Position { get; }
+        public double EntryPrice { get; }
+        public double TradeZoneSize { get; }
+        public double ZoneRecoverySize { get; }
+        public double TakeProfitLevel
+        {
+            get
+            {
+                if (Position == MarketPosition.Long)
+                {
+                    return EntryPrice + TradeZoneSize;                    
+                }
+                else if (Position == MarketPosition.Short)
+                {                    
+                    return EntryPrice - TradeZoneSize;                    
+                }
+                else
+                {
+                    return double.NaN;
+                }
+            }
+        } 
+        public double StopLossLevel
+        {
+            get
+            {
+                if (Position == MarketPosition.Long)
+                {
+                    return EntryPrice - ZoneRecoverySize - TradeZoneSize;
+                }
+                else if (Position == MarketPosition.Short)
+                {
+                    return EntryPrice + ZoneRecoverySize + TradeZoneSize;
+                }
+                else
+                {
+                    return double.NaN;
+                }
+            }
+        }
+
+        public double EntryLevel
+        {
+            get
+            {
+                return EntryPrice;
+            }
+        }
+        public double LossRecoveryLevel
+        {
+            get
+            {
+                if (Position == MarketPosition.Long)
+                {
+                    return EntryPrice - ZoneRecoverySize;
+                }
+                else if (Position == MarketPosition.Short)
+                {
+                    return EntryPrice + ZoneRecoverySize;
+                }
+                else
+                {
+                    return double.NaN;
+                }
+            }
+        }
 
         public ZoneLevels(MarketPosition position, double entryPrice, double tradeZoneSize, double zoneRecoverySize)
-        {                        
-            if (position == MarketPosition.Long)
+        {
+            Position = position;
+            EntryPrice = entryPrice;
+            TradeZoneSize = tradeZoneSize;
+            ZoneRecoverySize = zoneRecoverySize;            
+        }
+
+        public ZoneLevels Reverse()
+        {
+            if (Position == MarketPosition.Long)
             {
-                UpperTradingZone = entryPrice + tradeZoneSize;
-                LowerTradingZone = entryPrice - zoneRecoverySize - tradeZoneSize;
-                UpperRecoveryZone = entryPrice;
-                LowerRecoveryZone = entryPrice - zoneRecoverySize;
+                return new ZoneLevels(MarketPosition.Short, LossRecoveryLevel, TradeZoneSize, ZoneRecoverySize);
             }
-            else if (position == MarketPosition.Short)
+            else if (Position == MarketPosition.Short)
             {
-                UpperTradingZone = entryPrice + zoneRecoverySize + tradeZoneSize;
-                LowerTradingZone = entryPrice - tradeZoneSize;
-                UpperRecoveryZone = entryPrice + zoneRecoverySize; 
-                LowerRecoveryZone = entryPrice;
+                return new ZoneLevels(MarketPosition.Long, LossRecoveryLevel, TradeZoneSize, ZoneRecoverySize);
             }
+            else
+            {
+                return null;
+            }
+
         }
     }
 }

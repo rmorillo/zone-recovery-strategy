@@ -5,8 +5,7 @@ using System.Text;
 namespace ZoneRecoveryAlgorithm
 {
     public class RecoveryTurn
-    {
-        private ZoneLevels _zoneLevels;
+    {        
         private IZoneRecoverySettings _settings;
         private double _previousPrice;
         private double _currentPrice;
@@ -17,6 +16,7 @@ namespace ZoneRecoveryAlgorithm
         private IActiveTurn _activeTurn;
         private double _pipFactor;
 
+        public ZoneLevels ZoneLevels { get; private set; }
         public MarketPosition Position { get; }
         public double EntryPrice { get; }
         public double LotSize { get; }
@@ -50,7 +50,7 @@ namespace ZoneRecoveryAlgorithm
                 TurnIndex = previousTurn.TurnIndex + 1;
             }
 
-            _zoneLevels = zoneLevel;
+            ZoneLevels = zoneLevel;
             _entryPosition = entryPosition;
             PreviousTurn = previousTurn;
 
@@ -85,15 +85,15 @@ namespace ZoneRecoveryAlgorithm
             {
                 _unrealizedNetProfit = ((_currentPrice - EntryPrice) * LotSize) - Commission - Spread;
                 _unrealizedGrossProfit = (_currentPrice - EntryPrice) * LotSize;
-                isTakeProfitLevelHit = IsActive && _currentPrice >= _zoneLevels.UpperTradingZone;
-                isRecoveryLevelHit = IsActive && _previousPrice > _zoneLevels.LowerRecoveryZone && _currentPrice <= _zoneLevels.LowerRecoveryZone;
+                isTakeProfitLevelHit = IsActive && _currentPrice >= ZoneLevels.TakeProfitLevel;
+                isRecoveryLevelHit = IsActive && _previousPrice > ZoneLevels.LossRecoveryLevel && _currentPrice <= ZoneLevels.LossRecoveryLevel;
             }
             else if (Position == MarketPosition.Short)
             {
                 _unrealizedNetProfit = ((EntryPrice - _currentPrice) * LotSize) - Commission - Spread;
                 _unrealizedGrossProfit = (EntryPrice - _currentPrice) * LotSize;
-                isTakeProfitLevelHit = IsActive && _currentPrice <= _zoneLevels.LowerTradingZone;
-                isRecoveryLevelHit = IsActive && _previousPrice < _zoneLevels.UpperRecoveryZone && _currentPrice >= _zoneLevels.UpperRecoveryZone;
+                isTakeProfitLevelHit = IsActive && _currentPrice <= ZoneLevels.TakeProfitLevel;
+                isRecoveryLevelHit = IsActive && _previousPrice < ZoneLevels.LossRecoveryLevel && _currentPrice >= ZoneLevels.LossRecoveryLevel;
             }
 
             if (isTakeProfitLevelHit)
@@ -110,11 +110,11 @@ namespace ZoneRecoveryAlgorithm
                 {
                     var newPosition = Position.Reverse();
                     double previousTurnTargetNetReturns = GetTotalPreviousNetReturns(newPosition, PreviousTurn);
-                    double lotSize = GetLossRecoveryLotSize(_zoneLevels, previousTurnTargetNetReturns, spread, _commissionRate);
+                    double lotSize = GetLossRecoveryLotSize(ZoneLevels, previousTurnTargetNetReturns, spread, _commissionRate);
 
                     IsActive = false;
 
-                    return (PriceActionResult.RecoveryLevelHit, new RecoveryTurn(_activeTurn, this, _zoneLevels, _entryPosition, newPosition, bid, ask, lotSize, _settings));
+                    return (PriceActionResult.RecoveryLevelHit, new RecoveryTurn(_activeTurn, this, ZoneLevels.Reverse(), _entryPosition, newPosition, bid, ask, lotSize, _settings));
                 }
             }
             else
@@ -123,15 +123,21 @@ namespace ZoneRecoveryAlgorithm
             }                                                    
         }
 
+        public double GetNextTurnLotSize()
+        {            
+            double currentTurnTargetNetReturns = GetTotalPreviousNetReturns(Position.Reverse(), this.PreviousTurn);
+            return GetLossRecoveryLotSize(ZoneLevels, currentTurnTargetNetReturns, Spread, _commissionRate);
+        }
+
         private bool IsMaximumSlippageHit(double currentPrice)
         {
             if (Position == MarketPosition.Long)
             {
-                return (_zoneLevels.LowerRecoveryZone - currentPrice) / (_zoneLevels.UpperRecoveryZone - _zoneLevels.LowerRecoveryZone) > MaxSlippageRate;
+                return (ZoneLevels.LossRecoveryLevel - currentPrice) / (ZoneLevels.EntryLevel - ZoneLevels.LossRecoveryLevel) > MaxSlippageRate;
             }
             else if (Position == MarketPosition.Short)
             {
-                return (currentPrice - _zoneLevels.UpperRecoveryZone) / (_zoneLevels.UpperRecoveryZone - _zoneLevels.LowerRecoveryZone) > MaxSlippageRate;
+                return (currentPrice - ZoneLevels.LossRecoveryLevel) / (ZoneLevels.LossRecoveryLevel - ZoneLevels.EntryLevel) > MaxSlippageRate;
             }
             else
             {
@@ -159,15 +165,15 @@ namespace ZoneRecoveryAlgorithm
             RS = (PRS * ABS(PEL - PSL) + PTC - PTTR) / (RL - SL - CR)
             */
 
-            CalcHistory = $"LotSize: {LotSize}, EntryPrice: {EntryPrice}, zoneLevels.UpperTradingZone: {zoneLevels.UpperTradingZone}, Commission: {Commission}, _profitMargin: {_profitMargin}, spread: {spread}, previousTurnTargetNetReturns: {previousTurnTargetNetReturns}, zoneLevels.UpperTradingZone: {zoneLevels.UpperTradingZone}, commissionRate: {commissionRate}, _pipFactor: {_pipFactor}";
+            CalcHistory = $"LotSize: {LotSize}, EntryPrice: {EntryPrice}, zoneLevels.UpperTradingZone: {zoneLevels.TakeProfitLevel}, Commission: {Commission}, _profitMargin: {_profitMargin}, spread: {spread}, previousTurnTargetNetReturns: {previousTurnTargetNetReturns}, zoneLevels.UpperTradingZone: {zoneLevels.TakeProfitLevel}, commissionRate: {commissionRate}, _pipFactor: {_pipFactor}";
 
             if (Position == MarketPosition.Long)
             {
-                return (LotSize * (EntryPrice - zoneLevels.LowerTradingZone) + Commission +  _profitMargin  + spread - previousTurnTargetNetReturns) / (zoneLevels.LowerRecoveryZone - zoneLevels.LowerTradingZone - (commissionRate * _pipFactor));
+                return (LotSize * (EntryPrice - zoneLevels.StopLossLevel) + Commission +  _profitMargin  + spread - previousTurnTargetNetReturns) / (zoneLevels.LossRecoveryLevel - zoneLevels.StopLossLevel - (commissionRate * _pipFactor));
             }
             else if (Position == MarketPosition.Short)
             {
-                return (LotSize * (zoneLevels.UpperTradingZone - EntryPrice) + Commission + _profitMargin + spread - previousTurnTargetNetReturns) / (zoneLevels.UpperTradingZone - zoneLevels.UpperRecoveryZone - (commissionRate * _pipFactor));
+                return (LotSize * (zoneLevels.StopLossLevel - EntryPrice) + Commission + _profitMargin + spread - previousTurnTargetNetReturns) / (zoneLevels.StopLossLevel - zoneLevels.LossRecoveryLevel - (commissionRate * _pipFactor));
             }
             else
             {
@@ -195,11 +201,11 @@ namespace ZoneRecoveryAlgorithm
             {
                 if (Position == MarketPosition.Long)
                 {
-                    return - (LotSize * (_zoneLevels.UpperRecoveryZone - _zoneLevels.LowerTradingZone) + Commission + _profitMargin + Spread);
+                    return - (LotSize * (ZoneLevels.EntryLevel - ZoneLevels.StopLossLevel) + Commission + _profitMargin + Spread);
                 }
                 else if (Position == MarketPosition.Short)
                 {
-                    return LotSize * (_zoneLevels.LowerRecoveryZone - _zoneLevels.LowerTradingZone) - Commission - _profitMargin - Spread;
+                    return LotSize * (ZoneLevels.EntryLevel - ZoneLevels.TakeProfitLevel) - Commission - _profitMargin - Spread;
                 }
                 else
                 {
@@ -210,11 +216,11 @@ namespace ZoneRecoveryAlgorithm
             {
                 if (Position == MarketPosition.Long)
                 {
-                    return LotSize * (_zoneLevels.UpperTradingZone - _zoneLevels.UpperRecoveryZone) - Commission - _profitMargin - Spread;
+                    return LotSize * (ZoneLevels.TakeProfitLevel - ZoneLevels.EntryLevel) - Commission - _profitMargin - Spread;
                 }
                 else if (Position == MarketPosition.Short)
                 {
-                    return - (LotSize * (_zoneLevels.UpperTradingZone - _zoneLevels.LowerRecoveryZone) + Commission + _profitMargin + Spread);
+                    return - (LotSize * (ZoneLevels.StopLossLevel - ZoneLevels.EntryLevel) + Commission + _profitMargin + Spread);
                 }
                 else
                 {
